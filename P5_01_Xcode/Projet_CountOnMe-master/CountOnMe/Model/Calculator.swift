@@ -17,12 +17,16 @@ protocol CalculatorDelegate: NSObject
 class Calculator {
     
     var formula: String = ""
+    weak var delegate: CalculatorDelegate?
     
     var elements: [String] {
-       return formula.split(separator: " ").map { "\($0)" }
+        get {
+            return formula.split(separator: " ").map { "\($0)" }
+        }
+        set {
+            formula = newValue.joined(separator: " ")
+        }
     }
-    
-    weak var delegate: CalculatorDelegate?
     
     var expressionIsCorrect: Bool {
         return elements.last != "+" && elements.last != "-" && elements.last != "×" && elements.last != "÷"
@@ -33,7 +37,7 @@ class Calculator {
     }
     
     var canAddOperator: Bool {
-        return elements.last != "+" && elements.last != "-" && elements.last != "×" && elements.last != "÷"
+        return elements.last != "+" && elements.last != "-" && elements.last != "×" && elements.last != "÷" && formula != ""
     }
     
     // Error check computed variables
@@ -87,23 +91,51 @@ class Calculator {
             
         } else {
             delegate?.errorHappened(error: .operator)
-           
         }
     }
     
     func resetCalcul()
     {
-        formula = ""
+        formula = "0"
+        delegate?.formulaChanged(formula: formula)
+        formula.removeAll()
     }
     
-    func equal(operationsToReduce: [String]) -> String? {
-        // Create local copy of operations
-        var opretation = operationsToReduce
-        // Iterate over operations while an operand still here
-        while opretation.count > 1 {
-            let left = Int(opretation[0])!
-            let operand = opretation[1]
-            let right = Int(opretation[2])!
+    func equal() {
+        if expressionIsCorrect == false  {
+             delegate?.errorHappened(error: .newCalcul)
+         }
+         
+        if expressionHaveEnoughElement == false  {
+            delegate?.errorHappened(error: .expression)
+         } else {
+             while elements.count > 1 {
+                 calculateWithPriority()
+             }
+             elements.insert("= ", at: 0)
+             delegate?.formulaChanged(formula: formula)
+         }
+    }
+    
+    func calculateWithPriority() {
+        if elements.contains("×") || elements.contains("÷") {
+            let index = elements.firstIndex(where: {$0 == "×" || $0 == "÷"})!
+            let operand = elements[index]
+            
+            var result: Int
+            switch operand {
+            case "×": result = Int(elements[index-1])! * Int(elements[index+1])!
+            case "÷": result = Int(elements[index-1])! / Int(elements[index+1])!
+            default: fatalError("Unknown operator !")
+            }
+            
+            elements[index-1] = String(result)
+            elements.remove(at: index+1)
+            elements.remove(at: index)
+        } else {
+            let left = Int(elements[0])!
+            let operand = elements[1]
+            let right = Int(elements[2])!
             
             let result: Int
             switch operand {
@@ -114,13 +146,9 @@ class Calculator {
             default: fatalError("Unknown operator !")
             }
             
-            opretation = Array(opretation.dropFirst(3))
-            opretation.insert("\(result)", at: 0)
-            
-            return String(result)
+            elements = Array(elements.dropFirst(3))
+            elements.insert("\(result)", at: 0)
         }
-        return operationsToReduce.first
-    }
     
+    }
 }
-

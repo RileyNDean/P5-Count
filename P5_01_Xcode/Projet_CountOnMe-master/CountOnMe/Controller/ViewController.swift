@@ -17,11 +17,12 @@ class ViewController: UIViewController, CalculatorDelegate {
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        calculatorLogic.delegate? = self
+        calculatorLogic.delegate = self
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        calculatorLogic.delegate = self
     }
     
     // View Life cycles
@@ -38,22 +39,18 @@ class ViewController: UIViewController, CalculatorDelegate {
             return
         }
         calculatorLogic.addNumber(number: numberText)
-        formulaChanged(formula: calculatorLogic.formula)
     }
     
     @IBAction func tappedAdditionButton(_ sender: UIButton) {
         calculatorLogic.addPlus()
-        formulaChanged(formula: calculatorLogic.formula)
     }
     
     @IBAction func tappedSubstractionButton(_ sender: UIButton) {
         calculatorLogic.addSubstraction()
-        formulaChanged(formula: calculatorLogic.formula)
     }
     
     @IBAction func tappedMultiplicationButton(_ sender: UIButton) {
         calculatorLogic.addMultiplication()
-        formulaChanged(formula: calculatorLogic.formula)
     }
     @IBAction func tappedResetButton(_ sender: UIButton) {
         calculatorLogic.resetCalcul()
@@ -66,16 +63,7 @@ class ViewController: UIViewController, CalculatorDelegate {
     }
     
     @IBAction func tappedEqualButton(_ sender: UIButton) {
-       /* guard calculatorLogic.expressionIsCorrect(elements) else {
-            return errors.expressionError(controller: self)
-        }
-        
-        guard calculatorLogic.expressionHaveEnoughElement(elements) else {
-            return errors.newCalculError(controller: self)
-        }
-    
-        let operationsToReduce = calculatorLogic.equal(operationsToReduce: elements)
-        textView.text.append(" = \(String(describing: operationsToReduce!))")*/
+        calculatorLogic.equal()
     }
 
     // MARK: CalculatorDelegate

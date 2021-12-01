@@ -11,7 +11,7 @@ import UIKit
 
 class ErrorController {
     func opperatorError(controller: UIViewController) {
-        let alertVC = UIAlertController(title: "Zéro!", message: "Un operateur est déja mis !", preferredStyle: .alert)
+        let alertVC = UIAlertController(title: "Zéro!", message: "Vous ne pouvez pas ajouté d'opérateurs ici !", preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         controller.present(alertVC, animated: true, completion: nil)
     }
