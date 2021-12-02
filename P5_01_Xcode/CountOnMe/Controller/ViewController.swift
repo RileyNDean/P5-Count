@@ -32,7 +32,6 @@ class ViewController: UIViewController, CalculatorDelegate {
         // Do any additional setup after loading the view.
     }
     
-    
     // View actions
     @IBAction func tappedNumberButton(_ sender: UIButton) {
         guard let numberText = sender.title(for: .normal) else {

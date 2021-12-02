@@ -112,7 +112,7 @@ class Calculator {
              while elements.count > 1 {
                  calculateWithPriority()
              }
-             elements.insert("= ", at: 0)
+             elements.insert("=", at: 0)
              delegate?.formulaChanged(formula: formula)
          }
     }
@@ -141,8 +141,6 @@ class Calculator {
             switch operand {
             case "+": result = left + right
             case "-": result = left - right
-            case "×": result = left * right
-            case "÷": result = left / right
             default: fatalError("Unknown operator !")
             }
             
